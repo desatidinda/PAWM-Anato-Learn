@@ -1,0 +1,391 @@
+.quiz-container1 {
+  max-width: 1280px;
+  margin: auto;
+  padding: 60px 0px 4px 60px;
+  min-height: calc(100vh - 60px);
+}
+
+.quiz-header {
+  display: flex;
+  padding: 40px 50px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  border-radius: 24px;
+  border: 2px solid #E5E7EB;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 40px;
+}
+
+.quiz-text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quiz-title {
+  color: #00524F;
+  font-family: 'Poppins';
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.quiz-subtitle {
+  color: #374151;
+  text-align: justify;
+  font-family: 'Montserrat';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 760px;
+}
+
+.progress-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.progress-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: conic-gradient(#06A19C 0deg 180deg, #F5FAD1 180deg 360deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.progress-ring {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.progress-text {
+  color: #00524F;
+  font-family: 'Poppins';
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  margin: 0;
+}
+
+.discover-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.discover-title {
+  color: #00524F;
+  font-family: 'Montserrat';
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.quizzes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.loading, .error, .no-quizzes {
+  width: 100%;
+  text-align: center;
+  padding: 60px 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  color: #6B7280;
+}
+
+.error {
+  color: #EF4444;
+}
+
+.quiz-card1 {
+  display: flex;
+  width: 100%;
+  padding-bottom: 14px;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  border-radius: 24px;
+  border: 2px solid #E5E7EB;
+  background: #FFF;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.quiz-card1:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(196, 202, 206, 0.3);
+  border-color: #06A19C;
+}
+
+.quiz-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.quiz-image {
+  height: 185px;
+  align-self: stretch;
+  border-radius: 24px 24px 0 0;
+  background: url('./assets/questionred.png') lightgray center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.quiz-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quiz-info1 {
+  width: 100%;
+  text-align: center;
+  padding: 0 12px 8px;
+}
+
+.quiz-name1 {
+  color: #E03F6A;
+  text-align: center;
+  font-family: 'Montserrat';
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+  .quiz-container1 {
+    padding: 25px;
+    max-width: 1024px;
+  }
+  
+  .quiz-header {
+    padding: 30px 40px;
+    gap: 40px;
+  }
+  
+  .quiz-title {
+    font-size: 40px;
+  }
+  
+  .quiz-subtitle {
+    font-size: 18px;
+  }
+  
+  .progress-circle {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .progress-ring {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .progress-text {
+    font-size: 30px;
+  }
+  
+  .quizzes-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .quiz-card1 {
+    width: 250px;
+  }
+  
+  .quiz-image {
+    height: 165px;
+  }
+}
+
+@media (max-width: 768px) {
+  .quiz-container1 {
+    padding: 20px;
+    margin: 10px;
+    max-width: 768px;
+  }
+  
+  .quiz-header {
+    flex-direction: column;
+    padding: 25px 30px;
+    gap: 25px;
+    text-align: center;
+  }
+  
+  .quiz-text-content {
+    align-items: center;
+  }
+  
+  .quiz-subtitle {
+    text-align: center;
+    max-width: none;
+    font-size: 16px;
+  }
+  
+  .quiz-title {
+    font-size: 32px;
+  }
+  
+  .discover-title {
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .progress-circle {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .progress-ring {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .progress-text {
+    font-size: 26px;
+  }
+  
+  .quizzes-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .quiz-card1 {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .quiz-image {
+    height: 160px;
+  }
+  
+  .quiz-name1 {
+    font-size: 15px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-container1 {
+    padding: 15px;
+    margin: 5px;
+  }
+  
+  .quiz-header {
+    padding: 20px 25px;
+    gap: 20px;
+  }
+  
+  .quiz-title {
+    font-size: 28px;
+  }
+  
+  .quiz-subtitle {
+    font-size: 15px;
+  }
+  
+  .discover-title {
+    font-size: 20px;
+  }
+  
+  .progress-circle {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .progress-ring {
+    width: 85px;
+    height: 85px;
+  }
+  
+  .progress-text {
+    font-size: 22px;
+  }
+
+  .quizzes-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .quiz-card1 {
+    max-width: 280px;
+  }
+  
+  .quiz-image {
+    height: 140px;
+  }
+  
+  .quiz-name1 {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .quiz-container1 {
+    padding: 12px;
+  }
+  
+  .quiz-title {
+    font-size: 24px;
+  }
+  
+  .quiz-subtitle {
+    font-size: 14px;
+  }
+  
+  .discover-title {
+    font-size: 18px;
+  }
+  
+  .progress-circle {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .progress-ring {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .progress-text {
+    font-size: 18px;
+  }
+}

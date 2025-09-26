@@ -1,0 +1,429 @@
+.puzzle-container {
+  display: flex;
+  width: 1097.28px;
+  flex-direction: column;
+  align-items: flex-start;
+  position: absolute;
+  left: 500px;
+  top: 40px;
+  padding: 54px;
+  box-sizing: border-box;
+}
+
+.puzzle-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  align-self: stretch;
+  margin-bottom: 40px;
+}
+
+.puzzle-title {
+  color: #E03F6A;
+  font-family: 'Poppins';
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 57.6px;
+  margin: 0;
+}
+
+.puzzle-subtitle {
+  color: #0A0A0B;
+  text-align: justify;
+  font-family: 'Montserrat';
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 36px;
+  margin: 0;
+}
+
+.puzzle-game {
+  display: flex;
+  width: 1097.28px;
+  align-items: center;
+  gap: 48.6px;
+  align-self: stretch;
+}
+
+.organs-panel {
+  display: flex;
+  width: 491.4px;
+  height: 820px;
+  padding: 35.1px 24.12px 34.74px 24.3px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 18px;
+  border: 0.9px solid #BBB;
+  background: #FFF;
+  box-sizing: border-box;
+}
+
+.organs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(4, 1fr);
+  gap: 10px 15px;
+  width: 100%;
+  height: 100%;
+  justify-items: center;
+  align-items: center;
+  padding: 10px 0;
+  background: transparent;
+  border: none;
+}
+
+/* dashboard organ */
+.organ {
+  cursor: grab;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.organ:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.organ.dragging {
+  cursor: grabbing;
+  opacity: 0.7;
+  transform: rotate(5deg) scale(1.1);
+  z-index: 1000;
+}
+
+.organ-icon {
+  display: block;
+  object-fit: contain;
+}
+
+.organ.lungs .organ-icon {
+  width: 252.72px;
+  height: 211.68px;
+  aspect-ratio: 252.72/211.68;
+}
+
+.organ.heart .organ-icon {
+  width: 78.3px;
+  height: 113.4px;
+  aspect-ratio: 78.30/113.40;
+}
+
+.organ.liver .organ-icon {
+  width: 192.78px;
+  height: 116.64px;
+  aspect-ratio: 192.78/116.64;
+}
+
+.organ.stomach .organ-icon {
+  width: 154.98px;
+  height: 185.22px;
+  aspect-ratio: 154.98/185.22;
+}
+
+.organ.kidneys .organ-icon {
+  width: 52.92px;
+  height: 89.64px;
+  aspect-ratio: 52.92/89.64;
+}
+
+.organ.pancreas .organ-icon {
+  width: 114.48px;
+  height: 48.6px;
+  aspect-ratio: 114.48/48.60;
+}
+
+.organ.intestines .organ-icon {
+  width: 232.74px;
+  height: 226.26px;
+  aspect-ratio: 232.74/226.26;
+}
+
+.body-canvas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Badan Kosong */
+.human-body {
+  width: 557.28px;
+  height: 835.92px;
+  aspect-ratio: 557.28/835.92;
+  position: relative;
+  background-image: url('../assets/puzzle/basebody.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  opacity: 1;
+}
+
+/* Drop Zones sesuai posisi yg bener */
+.drop-zone {
+  position: absolute;
+  border: 2px dashed transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drop-zone.active {
+  border-color: #06A19C;
+  background: rgba(6, 161, 156, 0.1);
+  transform: scale(1.05);
+}
+
+.drop-zone.correct {
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.2);
+  animation: pulse 0.5s ease-in-out;
+}
+
+.drop-zone.correct {
+  border-color: #10B981;
+  background: rgba(16, 185, 129, 0.2);
+  animation: pulse 0.5s ease-in-out;
+  opacity: 1;
+}
+.drop-zone.heart-zone { 
+  top: 26%; 
+  left: 42%; 
+  width: 78.3px;
+  height: 113.4px;
+  z-index: 10;
+}
+
+.drop-zone.lungs-zone { 
+  top: 12%; 
+  left: 26%; 
+  width: 252.72px;
+  height: 211.68px;
+  z-index: 4;
+}
+
+.drop-zone.liver-zone { 
+  top: 39%; 
+  right: 40%; 
+  width: 192.78px;
+  height: 116.64px;
+  z-index: 8;
+}
+
+.drop-zone.stomach-zone { 
+  top: 35%; 
+  left: 45%; 
+  width: 154.98px;
+  height: 185.22px;
+  z-index: 3;
+}
+
+.drop-zone.kidneys-zone { 
+  top: 50%; 
+  left: 32%; 
+  width: 52.92px;
+  height: 89.64px;
+  z-index: 5;
+}
+
+.drop-zone.pancreas-zone { 
+  top: 55%; 
+  left: 45%; 
+  width: 114.48px;
+  height: 48.6px;
+  z-index: 5;
+}
+
+.drop-zone.intestines-zone { 
+  top: 60%; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 232.74px;
+  height: 226.26px;
+  z-index: 2;
+}
+
+.placed-organ {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.placed-organ:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.game-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  margin-top: 40px;
+  padding: 20px 30px;
+  background: #F9FAFB;
+  border-radius: 16px;
+  border: 1px solid #E5E7EB;
+}
+
+.score-display {
+  display: flex;
+  gap: 40px;
+}
+
+.score-item {
+  text-align: center;
+}
+
+.score-value {
+  color: #00524F;
+  font-family: 'Poppins';
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+}
+
+.score-label {
+  color: #6B7280;
+  font-family: 'Montserrat';
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #E03F6A, #C73650);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-family: 'Montserrat';
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(224, 63, 106, 0.3);
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .puzzle-container {
+    position: relative;
+    left: auto;
+    margin-left: 380px;
+    width: calc(100% - 420px);
+    max-width: 1097.28px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .puzzle-container {
+    padding: 40px;
+    width: calc(100% - 350px);
+    margin-left: 330px;
+  }
+  
+  .puzzle-game {
+    flex-direction: column;
+    gap: 35px;
+  }
+  
+  .organs-panel {
+    width: 100%;
+    max-width: 491.4px;
+    height: auto;
+    min-height: 400px;
+    padding: 30px;
+  }
+  
+  .organs-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .organ.lungs .organ-icon { width: 176.9px; height: 148.18px; }
+  .organ.heart .organ-icon { width: 54.81px; height: 79.38px; }
+  .organ.liver .organ-icon { width: 134.95px; height: 81.65px; }
+  .organ.stomach .organ-icon { width: 108.49px; height: 129.65px; }
+  .organ.kidneys .organ-icon { width: 37.04px; height: 62.75px; }
+  .organ.pancreas .organ-icon { width: 80.14px; height: 34.02px; }
+  .organ.intestines .organ-icon { width: 162.92px; height: 158.38px; }
+  
+  .human-body {
+    width: 390px;
+    height: 585px;
+  }
+}
+
+@media (max-width: 768px) {
+  .puzzle-container {
+    margin: 20px;
+    width: calc(100% - 40px);
+    padding: 25px;
+  }
+  
+  .puzzle-title {
+    font-size: 36px;
+    line-height: 43.2px;
+  }
+  
+  .puzzle-subtitle {
+    font-size: 16px;
+    line-height: 28.8px;
+  }
+  
+  .organs-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+  }
+  
+  .human-body {
+    width: 279px;
+    height: 418px;
+  }
+  
+  .organ.lungs .organ-icon { width: 126.36px; height: 105.84px; }
+  .organ.heart .organ-icon { width: 39.15px; height: 56.7px; }
+  .organ.liver .organ-icon { width: 96.39px; height: 58.32px; }
+  .organ.stomach .organ-icon { width: 77.49px; height: 92.61px; }
+  .organ.kidneys .organ-icon { width: 26.46px; height: 44.82px; }
+  .organ.pancreas .organ-icon { width: 57.24px; height: 24.3px; }
+  .organ.intestines .organ-icon { width: 116.37px; height: 113.13px; }
+}

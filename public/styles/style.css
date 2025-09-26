@@ -1,0 +1,119 @@
+/* Global Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background-color: #F9FAFB;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.main-content {
+  transition: margin-left 0.3s ease;
+}
+
+
+/* Small Mobile: 320px - 479px */
+@media (max-width: 479px) {
+  .container {
+    padding: 0 15px;
+  }
+}
+
+/* Mobile: 480px - 767px */
+@media (max-width: 767px) {
+  .main-content {
+    margin-left: 0 !important;
+  }
+}
+
+/* Tablet: 768px - 1023px */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-content {
+    margin-left: 280px;
+  }
+}
+
+/* Desktop: 1024px - 1199px */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .main-content {
+    margin-left: 350px;
+  }
+}
+
+/* Large Desktop: 1200px+ */
+@media (min-width: 1200px) {
+  .main-content {
+    margin-left: 400px;
+  }
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.d-flex { display: flex; }
+.flex-column { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.justify-center { justify-content: center; }
+.align-center { align-items: center; }
+.gap-10 { gap: 10px; }
+.gap-20 { gap: 20px; }
+.gap-30 { gap: 30px; }
+
+.mb-10 { margin-bottom: 10px; }
+.mb-20 { margin-bottom: 20px; }
+.mb-30 { margin-bottom: 30px; }
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.mt-30 { margin-top: 30px; }
+
+.p-10 { padding: 10px; }
+.p-20 { padding: 20px; }
+.p-30 { padding: 30px; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.hide-mobile { display: block; }
+.show-mobile { display: none; }
+
+@media (max-width: 767px) {
+  .hide-mobile { display: none; }
+  .show-mobile { display: block; }
+}
+
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid #06A19C;
+  outline-offset: 2px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #6B7280;
+  font-family: 'Montserrat';
+}
