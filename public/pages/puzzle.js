@@ -15,7 +15,7 @@ export const PuzzlePage = () => {
     <div class="puzzle-container">
     <div class="puzzle-header">
       <h1 class="puzzle-title">Anatomy Puzzle Lab</h1>
-      <p class="puzzle-subtitle">Put the Human Body Back Together! Drag and drop each organ to its correct place.</p>
+      <p class="puzzle-subtitle">Put the Human Body Back Together! Drag and Drop Each Organ to Its Correct Place.</p>
     </div>
       
       <div class="puzzle-game">
@@ -190,7 +190,6 @@ function handleDrop(e) {
   
   const organType = draggedElement.dataset.organ;
   const targetType = targetZone.dataset.target;
-
   
   totalAttempts++;
   
@@ -198,17 +197,25 @@ function handleDrop(e) {
     correctPlacements++;
     targetZone.classList.add('correct');
     
-    const placedOrgan = document.createElement('div');
-    placedOrgan.className = `placed-organ ${organType}`;
-    placedOrgan.innerHTML = draggedElement.querySelector('.organ-icon').outerHTML;
+    const placedOrgan = draggedElement.cloneNode(true);
+    placedOrgan.className = `placed-organ organ ${organType}`;
+    placedOrgan.style.position = 'absolute';
     placedOrgan.style.top = '50%';
     placedOrgan.style.left = '50%';
     placedOrgan.style.transform = 'translate(-50%, -50%)';
+    placedOrgan.style.pointerEvents = 'none';
+    placedOrgan.style.zIndex = '10';
+    placedOrgan.style.cursor = 'default';
     
     targetZone.appendChild(placedOrgan);
-    
     draggedElement.style.display = 'none';
+    
+    if (correctPlacements === 7) {
+      setTimeout(() => {
+        alert('Congratulations! You completed the puzzle!');
+      }, 500);
     }
+  }
   
   updateScore();
 }

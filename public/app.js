@@ -138,6 +138,20 @@ function setupEventListeners() {
         alert('Quiz will be available soon!');
       }
     }
+
+    if (e.target.closest('.quiz-card1')) {
+      e.preventDefault();
+      const quizCard = e.target.closest('.quiz-card1');
+      const quizId = quizCard.getAttribute('data-quiz-id');
+      
+      console.log(`Quiz ${quizId} clicked!`);
+      
+      if (quizId === '1') {
+        router.navigate('questions');
+      } else {
+        alert('Quiz will be available soon!');
+      }
+    }
   });
 }
 

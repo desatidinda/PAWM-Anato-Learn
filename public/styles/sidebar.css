@@ -1,5 +1,5 @@
 .sidebar {
-    width: 444px;
+    width: 360px;
     height: 100vh;
     flex-shrink: 0;
     background: #00524F;
@@ -23,8 +23,8 @@
 }
 
 .sidebar-logo img {
-    width: 251.73px;
-    height: 175.97px;
+    width: 201.73px;
+    height: 140.97px;
     flex-shrink: 0;
     display: block;
     margin: 0;
@@ -33,7 +33,7 @@
 
 .sidebar-menu {
     display: flex;
-    width: 310.387px;
+    width: 280px;
     flex-direction: column;
     align-items: flex-start;
     gap: 9.776px;
@@ -65,16 +65,16 @@
 .sidebar-label {
   color: var(--Tertiary500, #E7F1A8);
   font-family: 'Montserrat', Arial, sans-serif;
-  font-size: 26px;
+  font-size: 22px;
   font-style: normal;
   font-weight: 700;
-  line-height: 44px;
+  line-height: 38px;
   transition: opacity 0.3s ease; 
 }
 
 .sidebar-icon svg {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   color: var(--Tertiary500, #E7F1A8);
   transition: color 0.2s;
 }
