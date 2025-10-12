@@ -5,12 +5,13 @@ const { admin, db } = require('./config/firebase');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors({
   origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-app.use(cors());
+
 app.use(express.json());
 
 // Routes
@@ -24,6 +25,10 @@ app.use('/api/quiz', quizRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Anato-Learn API is running!' });
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Server is running' });
 });
 
 // Firebase connection
