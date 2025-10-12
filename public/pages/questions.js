@@ -5,82 +5,55 @@ let currentQuestionIndex = 0;
 let score = 0;
 let selectedAnswers = [];
 let userAnswers = [];
-
-// Sample quiz data
-const sampleQuizzes = {
-  "circulatory": {
-    id: "circulatory",
-    title: "Circulatory System Quiz",
-    category: "Anatomy - Cardiovascular",
-    description: "Test your knowledge of the circulatory system",
-    totalQuestions: 5,
-    timeLimit: 300, // 5 minutes in seconds
-    questions: [
-      {
-        id: 1,
-        question: "What is the main function of the circulatory system?",
-        type: "multiple-choice",
-        options: [
-          { id: "a", text: "Transport nutrients and oxygen throughout the body", correct: true },
-          { id: "b", text: "Digest food and absorb nutrients", correct: false },
-          { id: "c", text: "Filter waste from the blood", correct: false },
-          { id: "d", text: "Produce hormones and enzymes", correct: false }
-        ],
-      },
-      {
-        id: 2,
-        question: "How many chambers does a human heart have?",
-        type: "multiple-choice",
-        options: [
-          { id: "a", text: "2 chambers", correct: false },
-          { id: "b", text: "3 chambers", correct: false },
-          { id: "c", text: "4 chambers", correct: true },
-          { id: "d", text: "6 chambers", correct: false }
-        ],
-      },
-      {
-        id: 3,
-        question: "Which blood vessel carries oxygenated blood away from the heart?",
-        type: "multiple-choice",
-        options: [
-          { id: "a", text: "Veins", correct: false },
-          { id: "b", text: "Arteries", correct: true },
-          { id: "c", text: "Capillaries", correct: false },
-          { id: "d", text: "Venules", correct: false }
-        ],
-      },
-      {
-        id: 4,
-        question: "What is the average resting heart rate for adults?",
-        type: "multiple-choice",
-        options: [
-          { id: "a", text: "40-50 beats per minute", correct: false },
-          { id: "b", text: "60-100 beats per minute", correct: true },
-          { id: "c", text: "120-140 beats per minute", correct: false },
-          { id: "d", text: "150-180 beats per minute", correct: false }
-        ],
-      },
-      {
-        id: 5,
-        question: "Which component of blood is responsible for clotting?",
-        type: "multiple-choice",
-        options: [
-          { id: "a", text: "Red blood cells", correct: false },
-          { id: "b", text: "White blood cells", correct: false },
-          { id: "c", text: "Platelets", correct: true },
-          { id: "d", text: "Plasma", correct: false }
-        ],
-      }
-    ]
-  }
-};
-
-// Timer
 let quizTimer = null;
 let timeRemaining = 0;
+let quizStartTime = null;
+
+async function loadQuizData(quizId) {
+  try {
+    
+    const response = await fetch(`https://be-anato-learn-6ex73rcgf-desati-dindas-projects.vercel.app/api/quiz/${quizId}`);
+    const result = await response.json();
+    
+    if (result.success) {
+      return result.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+}
+
+async function initializeQuiz(quizId) {
+  
+  currentQuizData = await loadQuizData(quizId);
+  
+  currentQuestionIndex = 0;
+  score = 0;
+  selectedAnswers = [];
+  userAnswers = [];
+  quizStartTime = null;
+  
+  if (!currentQuizData || !currentQuizData.questions || currentQuizData.questions.length === 0) {
+    return false;
+  }
+  
+  // Update quiz header
+  setTimeout(() => {
+    const titleElement = document.querySelector('.quiz-title');
+    const categoryElement = document.querySelector('.quiz-category');
+    
+    if (titleElement) titleElement.textContent = currentQuizData.title;
+    if (categoryElement) categoryElement.textContent = currentQuizData.category || 'Anatomy Quiz';
+  }, 100);
+  
+  return true;
+}
 
 function startTimer() {
-  timeRemaining = currentQuizData.timeLimit;
+  timeRemaining = currentQuizData.timeLimit || 300; // Default 5 menit
+  quizStartTime = Date.now();
   updateTimerDisplay();
   
   quizTimer = setInterval(() => {
@@ -110,21 +83,6 @@ function stopTimer() {
     clearInterval(quizTimer);
     quizTimer = null;
   }
-}
-
-function initializeQuiz(quizId) {
-  currentQuizData = sampleQuizzes[quizId];
-  currentQuestionIndex = 0;
-  score = 0;
-  selectedAnswers = [];
-  userAnswers = [];
-  
-  if (!currentQuizData) {
-    console.error('Quiz not found:', quizId);
-    return false;
-  }
-  
-  return true;
 }
 
 function selectAnswer(optionId) {
@@ -168,9 +126,30 @@ function nextQuestion() {
   }
 }
 
-function endQuiz() {
+async function endQuiz() {
   stopTimer();
+  await saveQuizProgress();
   showResults();
+}
+
+async function saveQuizProgress() {
+  
+  if (window.progressManager && window.progressManager.currentUser) {
+    try {
+      const totalQuestions = currentQuizData.questions.length;
+      const correctAnswers = userAnswers.filter(answer => answer.correct).length;
+      const timeUsed = quizStartTime ? Math.round((Date.now() - quizStartTime) / 1000) : 0;
+      
+      const result = await window.progressManager.saveQuizScore(
+        currentQuizData.id,
+        correctAnswers,
+        totalQuestions,
+        timeUsed
+      );
+    } catch (error) {
+      console.error('Error saving quiz progress:', error);
+    }
+  }
 }
 
 function showResults() {
@@ -179,14 +158,10 @@ function showResults() {
   const totalQuestions = currentQuizData.questions.length;
   const correctAnswers = userAnswers.filter(answer => answer.correct).length;
   const percentage = Math.round((correctAnswers / totalQuestions) * 100);
-  const timeUsed = currentQuizData.timeLimit - timeRemaining;
+  const timeUsed = (currentQuizData.timeLimit || 300) - timeRemaining;
   const minutes = Math.floor(timeUsed / 60);
   const seconds = timeUsed % 60;
 
-  if (window.markQuizCompleted) {
-    window.markQuizCompleted(1, percentage);
-  }
-  
   let performanceMessage = "";
   let performanceClass = "";
   
@@ -253,6 +228,10 @@ function showResults() {
 }
 
 function renderCurrentQuestion() {
+  if (!currentQuizData || !currentQuizData.questions || currentQuizData.questions.length === 0) {
+    return;
+  }
+  
   const question = currentQuizData.questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / currentQuizData.questions.length) * 100;
   const isLastQuestion = currentQuestionIndex === currentQuizData.questions.length - 1;
@@ -310,24 +289,52 @@ function renderCurrentQuestion() {
 
 window.selectAnswer = selectAnswer;
 window.nextQuestion = nextQuestion;
-window.retryQuiz = () => {
+window.retryQuiz = async () => {
   const quizId = currentQuizData.id;
-  initializeQuiz(quizId);
+  await initializeQuiz(quizId);
   renderCurrentQuestion();
   startTimer();
 };
-window.goBackToQuizzes = () => window.router.navigate('quiz');
+window.goBackToQuizzes = () => {
+  window.router.navigate('quiz');
+};
 
-export const QuestionsPage = (quizId = 'circulatory') => {
-  renderSidebar('quiz');
-  
-  if (!initializeQuiz(quizId)) {
-    return `<div class="error">Quiz not found</div>`;
+export const QuestionsPage = (quizId) => {
+  if (!quizId || quizId === undefined) {
+    const hash = window.location.hash; 
+    
+    if (hash.includes('questions/')) {
+      quizId = hash.split('questions/')[1];
+    } else if (hash.includes('/questions/')) {  
+      quizId = hash.split('/questions/')[1];
+    }
+    
+    if (quizId && quizId.includes('/')) {
+      quizId = quizId.split('/')[0];
+    }
   }
   
-  setTimeout(() => {
-    renderCurrentQuestion();
-    startTimer();
+  renderSidebar('quiz');
+  
+  setTimeout(async () => {
+    
+    const success = await initializeQuiz(quizId);
+    if (success) {
+      renderCurrentQuestion();
+      startTimer();
+    } else {
+      document.querySelector('.quiz-content').innerHTML = `
+        <div class="error" style="text-align: center; padding: 40px; color: white;">
+          <h3>Quiz Not Available</h3>
+          <p>The quiz "${quizId}" could not be loaded.</p>
+          <p>It might be inactive or the questions are not available yet.</p>
+          <button onclick="window.router.navigate('quiz')" 
+                  style="background: #1e7e34; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+            Back to Quizzes
+          </button>
+        </div>
+      `;
+    }
   }, 100);
   
   return `
@@ -335,19 +342,19 @@ export const QuestionsPage = (quizId = 'circulatory') => {
       <div class="questions-container">
         <div class="quiz-header">
           <div class="quiz-info">
-            <h1 class="quiz-title">${currentQuizData.title}</h1>
+            <h1 class="quiz-title">Loading Quiz...</h1>
             <div class="quiz-meta-info">
-              <span class="quiz-category">${currentQuizData.category}</span>
-              <span class="quiz-description">${currentQuizData.description}</span>
+              <span class="quiz-category">Loading...</span>
             </div>
           </div>
         </div>
         
         <div class="quiz-content">
+          <div class="loading" style="text-align: center; padding: 40px; color: white;">
+            Loading quiz questions for "${quizId}"...
+          </div>
         </div>
       </div>
     </div>
   `;
 };
-
-export { sampleQuizzes };

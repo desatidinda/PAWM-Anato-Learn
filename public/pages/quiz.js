@@ -1,89 +1,136 @@
 import { renderSidebar } from '../components/sidebar.js';
 
-// Mock quiz data
-const mockQuizzesData = [
-  {
-    id: 1,
-    title: "Circulatory system",
-    questions: 5,
-    image: "./assets/circulatory.jpg",
-    type: "circulatory"
-  },
-  {
-    id: 2,
-    title: "Quiz round 2", 
-    questions: 15,
-    image: "./assets/questionred.png",
-    type: "none"
-  },
-  {
-    id: 3,
-    title: "Quiz round 3",
-    questions: 20,
-    image: "./assets/questionred.png",
-    type: "none"
-  },
-  {
-    id: 4,
-    title: "Quiz round 4",
-    questions: 25,
-    image: "./assets/questionred.png",
-    type: "none"
-  },
-  {
-    id: 5,
-    title: "Quiz round 5",
-    questions: 30,
-    image: "./assets/questionred.png",
-    type: "none"
-  },
-  { 
-    id: 6,
-    title: "Quiz round 6",
-    questions: 18,
-    image: "./assets/questionred.png",
-    type: "none"
-  },
-  {
-    id: 7,
-    title: "Quiz round 7",
-    questions: 22,
-    image: "./assets/questionred.png",
-    type: "none"
-  },
-  {
-    id: 8,
-    title: "Quiz round 8",
-    questions: 30,
-    image: "./assets/questionred.png",
-    type: "none"
-  }
-];
+let quizzesData = [];
 
-async function fetchQuizzes() {
+function calculateOverallProgress() {
+  if (!quizzesData || quizzesData.length === 0) return 0;
+  
+  const activeQuizzes = quizzesData.filter(quiz => quiz.isActive !== false && quiz.type !== 'none');
+  const totalActiveQuizzes = activeQuizzes.length;
+  
+  if (totalActiveQuizzes === 0) return 0;
+  
+  let passedQuizzes = 0;
+  activeQuizzes.forEach(quiz => {
+    const progressScore = document.getElementById(`progressScore-${quiz.id}`);
+    if (progressScore && progressScore.textContent === 'PASSED') {
+      passedQuizzes++;
+    }
+  });
+  
+  const percentage = Math.round((passedQuizzes / totalActiveQuizzes) * 100);
+  return percentage;
+}
+
+function updateProgressCircle(percentage) {
+  const progressElement = document.getElementById('overallProgress');
+  const progressCircle = document.querySelector('.progress-circle');
+  
+  if (progressElement) {
+    progressElement.textContent = `${percentage}%`;
+  }
+  
+  if (progressCircle) {
+    progressCircle.style.setProperty('--progress', percentage);
+  }
+}
+
+async function fetchQuizzesFromBackend() {
   try {
-    // TODO: ganti jd api call nanti
-    return new Promise(resolve => {
-      setTimeout(() => resolve(mockQuizzesData), 100);
-    });
+    const response = await fetch('https://be-anato-learn-6ex73rcgf-desati-dindas-projects.vercel.app/api/quiz/list');
+    const result = await response.json();
+    
+    if (result.success && result.data) {
+      const transformedQuizzes = result.data.map((quiz, index) => ({
+        id: index + 1,
+        title: quiz.title,
+        questions: quiz.totalQuestions || 5,
+        image: quiz.image,
+        type: quiz.id,
+        isActive: quiz.isActive
+      }));
+      return transformedQuizzes;
+    } else {
+      throw new Error('No data from backend');
+    }
   } catch (error) {
-    console.error('Error fetching quizzes:', error);
-    return [];
+    console.error('Backend fetch failed:', error);
+    return [
+      {
+        id: 1,
+        title: "Circulatory system",
+        questions: 5,
+        image: "./assets/circulatory.jpg",
+        type: "circulatory"
+      },
+      {
+        id: 2,
+        title: "Quiz round 2",
+        questions: 5,
+        image: "./assets/questionred.png",
+        type: "respiratory"
+      },
+      {
+        id: 3,
+        title: "Quiz round 3",
+        questions: 5,
+        image: "./assets/questionred.png",
+        type: "nervous"
+      },
+      {
+        id: 4,
+        title: "Quiz round 4",
+        questions: 5,
+        image: "./assets/questionred.png",
+        type: "skeletal"
+      },
+      {
+        id: 5,
+        title: "Quiz round 5",
+        questions: 30,
+        image: "./assets/questionred.png",
+        type: "none"
+      },
+      {
+        id: 6,
+        title: "Quiz round 6",
+        questions: 18,
+        image: "./assets/questionred.png",
+        type: "none"
+      },
+      {
+        id: 7,
+        title: "Quiz round 7",
+        questions: 22,
+        image: "./assets/questionred.png",
+        type: "none"
+      },
+      {
+        id: 8,
+        title: "Quiz round 8",
+        questions: 30,
+        image: "./assets/questionred.png",
+        type: "none"
+      }
+    ];
   }
 }
 
 function generateQuizCard(quiz) {
   return `
-    <div class="quiz-card1" data-quiz-id="${quiz.id}">
+    <div class="quiz-card1" data-quiz-id="${quiz.id}" data-quiz-type="${quiz.type}">
       <div class="quiz-content">
-        <!-- Quiz Image -->
         <div class="quiz-image">
-          <img src="${quiz.image}" alt="${quiz.title}">
+          <img src="${quiz.image}" 
+               alt="${quiz.title}"
+               onerror="this.src='./assets/questionred.png'">
         </div>
         
-        <!-- Quiz Info -->
         <div class="quiz-info1">
           <h3 class="quiz-name1">${quiz.title}</h3>
+          <div class="progress-box" id="progressBox-${quiz.id}">
+            <div class="progress-score not-started" id="progressScore-${quiz.id}">Not Started</div>
+          </div>
         </div>
       </div>
     </div>
@@ -93,27 +140,55 @@ function generateQuizCard(quiz) {
 export const QuizPage = () => {
   renderSidebar('quiz');
 
-  setTimeout(async () => {
+  if (window.quizPageTimeout) {
+    clearTimeout(window.quizPageTimeout);
+  }
+
+  window.quizPageTimeout = setTimeout(async () => {
     const quizzesGrid = document.querySelector('.quizzes-grid');
     if (quizzesGrid) {
-      quizzesGrid.innerHTML = '<div class="loading">Loading quizzes...</div>';
+      quizzesGrid.innerHTML = '<div class="loading" style="text-align: center; padding: 20px; color: white;">Loading quizzes...</div>';
       
       try {
-        const quizzes = await fetchQuizzes();
+        quizzesData = await fetchQuizzesFromBackend();
+
+        quizzesGrid.innerHTML = quizzesData.map(generateQuizCard).join('');
         
-        if (quizzes.length > 0) {
-          quizzesGrid.innerHTML = quizzes.map(generateQuizCard).join('');
-        } else {
-          quizzesGrid.innerHTML = '<div class="no-quizzes">No quizzes available</div>';
-        }
+        document.querySelectorAll('.quiz-card1').forEach(card => {
+          card.addEventListener('click', () => {
+            const quizType = card.dataset.quizType;
+            const quiz = quizzesData.find(q => q.id == card.dataset.quizId);
+
+            if (quiz && quiz.isActive !== false && quizType && quizType !== 'none') {
+              window.router.navigate('questions', quizType);
+            } else {
+              alert('This quiz is not available yet!');
+            }
+          });
+        });
+
+        setTimeout(async () => {
+          await loadQuizProgress();
+          
+          setTimeout(() => {
+            const overallProgress = calculateOverallProgress();
+            updateProgressCircle(overallProgress);
+          }, 500);
+        }, 500);
         
       } catch (error) {
-        quizzesGrid.innerHTML = '<div class="error">Failed to load quizzes</div>';
+        quizzesGrid.innerHTML = `
+          <div class="error" style="text-align: center; padding: 20px; color: red;">
+            <h3>Failed to Load Quizzes</h3>
+            <p>Please try again</p>
+            <button onclick="window.location.reload()">Retry</button>
+          </div>
+        `;
       }
     }
-  }, 0);
+  }, 100);
 
-  return `
+    return `
     <div class="main-content">
       <div class="quiz-container1">
         <div class="quiz-header">
@@ -123,9 +198,9 @@ export const QuizPage = () => {
           </div>
           
           <div class="progress-section">
-            <div class="progress-circle">
+            <div class="progress-circle" style="--progress: 0">
               <div class="progress-ring">
-                <div class="progress-text">50%</div>
+                <div class="progress-text" id="overallProgress">0%</div>
               </div>
             </div>
           </div>
@@ -135,6 +210,7 @@ export const QuizPage = () => {
           <h2 class="discover-title">Discover quizzes!</h2>
           
           <div class="quizzes-grid">
+            <div class="loading">Loading...</div>
           </div>
         </div>
       </div>
@@ -142,4 +218,46 @@ export const QuizPage = () => {
   `;
 };
 
-export { fetchQuizzes, mockQuizzesData };
+async function loadQuizProgress() {
+  if (!window.progressManager || !window.progressManager.currentUser) {
+    return;
+  }
+  
+  for (const quiz of quizzesData) {
+    const progressScore = document.getElementById(`progressScore-${quiz.id}`);
+    
+    if (quiz.isActive !== false && quiz.type && quiz.type !== 'none') {
+      try {
+        const progressData = await window.progressManager.getQuizHighScore(quiz.type);
+        
+        if (progressScore) {
+          if (progressData.attempts > 0) {
+            const score = progressData.highScore || 0;
+            const maxScore = quiz.questions || 5;
+            
+            if (score >= maxScore) {
+              progressScore.textContent = 'PASSED';
+              progressScore.className = 'progress-score passed';
+            } else {
+              progressScore.textContent = `${score}/${maxScore}`;
+              progressScore.className = 'progress-score attempted';
+            }
+          } else {
+            progressScore.textContent = 'Not Started';
+            progressScore.className = 'progress-score not-started';
+          }
+        }
+      } catch (error) {
+        if (progressScore) {
+          progressScore.textContent = 'Not Started';
+          progressScore.className = 'progress-score not-started';
+        }
+      }
+    } else {
+      if (progressScore) {
+        progressScore.textContent = 'Not Started';
+        progressScore.className = 'progress-score not-started';
+      }
+    }
+  }
+}

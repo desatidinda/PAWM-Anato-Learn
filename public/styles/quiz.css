@@ -59,11 +59,15 @@
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: conic-gradient(#06A19C 0deg 180deg, #F5FAD1 180deg 360deg);
+  background: conic-gradient(
+    #06A19C 0deg calc(var(--progress, 0) * 3.6deg), 
+    #F5FAD1 calc(var(--progress, 0) * 3.6deg) 360deg
+  );
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  transition: all 0.5s ease;
 }
 
 .progress-ring {
@@ -184,6 +188,33 @@
   font-weight: 700;
   line-height: 1.5;
   margin: 0;
+}
+
+  .progress-box {
+    margin-top: 8px;
+    padding: 6px 10px;
+    background: #f0f8f7;
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .progress-score.unavailable {
+    color: #dc3545;
+    font-style: italic;
+  }
+
+  .progress-score.not-started {
+    color: #6c757d;
+  }
+
+  .progress-score.attempted {
+    color: #856404;
+  }
+
+  .progress-score.passed {
+    color: #155724;
+    border-radius: 4px;
+    font-weight: 700;
 }
 
 /* Responsive */

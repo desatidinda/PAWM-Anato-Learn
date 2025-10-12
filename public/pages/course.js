@@ -20,13 +20,13 @@ const courseContentData = {
   2: {
     title: "Circulatory System",
     description: "Explore the heart, blood vessels, and circulation",
-    videoId: "bHZsvBdUC2I",
+    videoId: "X9ZZ6tcxArI",
     content: "Learn about the cardiovascular system and how blood flows through your body. The circulatory system is responsible for transporting oxygen, nutrients, and waste products.",
     bodyParts: [
-      { name: "Heart", image: "./assets/circulatoryquiz.png" },
-      { name: "Arteries", image: "./assets/circulatoryquiz.png" },
-      { name: "Veins", image: "./assets/circulatoryquiz.png" },
-      { name: "Capillaries", image: "./assets/circulatoryquiz.png" }
+      { name: "Heart", image: "./assets/CirculatoryQuiz.png" },
+      { name: "Arteries", image: "./assets/CirculatoryQuiz.png" },
+      { name: "Veins", image: "./assets/CirculatoryQuiz.png" },
+      { name: "Capillaries", image: "./assets/CirculatoryQuiz.png" }
     ]
   }
 };

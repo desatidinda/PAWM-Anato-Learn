@@ -1,0 +1,234 @@
+/* Profile Page Styles */
+.profile-page {
+  padding: 40px 60px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+}
+
+.profile-container {
+  display: flex;
+  width: 80%;
+  max-width: 1000px;
+  padding: 40px;
+  align-items: center;
+  gap: 80px;
+  border-radius: 20px;
+  border: 1px solid #636A6D;
+  background: #fff;
+  margin-left: auto;
+  margin-right: 0;
+  position: relative;
+}
+
+.profile-picture {
+  display: flex;
+  width: 200px;
+  height: 200px;
+  padding: 16px 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 100px;
+  border: 2px solid #9DA4A8;
+  background: lightgray 50% / cover no-repeat;
+  background-image: url('../assets/defaultprofile.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.profile-info-frame {
+  display: flex;
+  width: 800px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px; /* ← Reduced gap */
+  flex-shrink: 0;
+}
+
+.profile-name {
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+}
+
+.profile-name-edit {
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+  font-size: 35px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  width: 100%;
+  max-width: 400px;
+  outline: none;
+}
+
+.profile-name-edit:focus {
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.profile-email {
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  margin: 0;
+  margin-bottom: 24px;
+}
+
+.change-username-btn {
+  display: flex;
+  padding: 12px 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 20px;
+  border: 4px solid #000;
+  background: #C21A44;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #FFF;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.change-username-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(194, 26, 68, 0.3);
+}
+
+.change-username-btn:active {
+  transform: translateY(0);
+}
+
+.logout-btn {
+  display: inline-flex;
+  padding: 12px 20px;
+  align-items: flex-end;
+  gap: 16px;
+  border-radius: 16px;
+  background: #000;
+  color: #FFF;
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  position: absolute;
+  bottom: -80px;
+  right: 0;
+}
+
+.logout-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+.logout-btn svg {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+}
+
+.profile-actions {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .profile-container {
+    width: 85%;
+    max-width: 900px;
+    gap: 60px;
+  }
+  
+  .profile-header h1 {
+    font-size: 48px;
+    line-height: 60px;
+  }
+  
+  .profile-name {
+    font-size: 30px;
+  }
+  
+  .profile-email {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 20px;
+  }
+  
+  .profile-container {
+    flex-direction: column;
+    gap: 30px;
+    padding: 30px;
+    width: 100%;
+    margin-left: 0;
+    position: static;
+  }
+  
+  .profile-info-frame {
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .profile-header h1 {
+    font-size: 36px;
+    line-height: 48px;
+  }
+  
+  .profile-name {
+    font-size: 24px;
+  }
+  
+  .profile-email {
+    font-size: 18px;
+  }
+  
+  .logout-btn {
+    position: static;
+    margin-top: 20px;
+    align-self: center;
+  }
+}

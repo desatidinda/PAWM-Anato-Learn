@@ -12,7 +12,7 @@ const mockCoursesData = [
     id: 2,
     title: "Circulatory System",
     description: "Explore the heart, blood vessels, and circulation",
-    image: "./assets/circulatory.jpg"
+    image: "./assets/quiz/circulatory.jpg"
   },
   {
     id: 3,
