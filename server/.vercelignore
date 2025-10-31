@@ -1,0 +1,17 @@
+# Ignore frontend files from backend deployment
+../public
+../public/**
+public
+public/**
+*.html
+*.css
+assets
+assets/**
+components
+components/**
+pages
+pages/**
+styles
+styles/**
+app.js
+firebaseConfig.js

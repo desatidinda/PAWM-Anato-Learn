@@ -1,0 +1,6 @@
+# Ignore backend files from frontend deployment
+server
+server/**
+serviceAccountKey.json
+node_modules
+.env
