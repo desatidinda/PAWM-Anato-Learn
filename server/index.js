@@ -4,31 +4,39 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS CONFIGURATION
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+  res.header('Access-Control-Max-Age', '86400');
+  res.status(204).send();
+});
+
 app.use(cors({
-  origin: true,
-  credentials: false,
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  optionsSuccessStatus: 200
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: false,
+  optionsSuccessStatus: 204
 }));
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.header('Access-Control-Max-Age', '3600');
-  
-  if (req.method === 'OPTIONS') {
-    return res.status(200).json({ success: true, message: 'CORS preflight OK' });
-  }
-  
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+  res.header('Access-Control-Allow-Credentials', 'false');
   next();
 });
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// TRY FIREBASE
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'none'}`);
+  next();
+});
+
+// FIREBASE INITIALIZATION
 let db;
 try {
   const firebase = require('./config/firebase');
@@ -46,15 +54,15 @@ app.get('/', (req, res) => {
     timestamp: new Date().toISOString(),
     status: 'OK',
     firebase: db ? 'connected' : 'not configured',
-    endpoints: [
-      'GET /',
-      'GET /api/health',
-      'GET /api/test-firebase',
-      'GET /api/quiz/list',
-      'GET /api/quiz/:quizId',
-      'POST /api/auth/register',
-      'POST /api/auth/login'
-    ]
+    cors: 'enabled',
+    endpoints: {
+      health: '/api/health',
+      testFirebase: '/api/test-firebase',
+      quizList: '/api/quiz/list',
+      quizDetail: '/api/quiz/:quizId',
+      authRegister: 'POST /api/auth/register',
+      authLogin: 'POST /api/auth/login'
+    }
   });
 });
 
@@ -64,7 +72,8 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     message: 'Server is running', 
     timestamp: new Date().toISOString(),
-    firebase: db ? 'connected' : 'not configured'
+    firebase: db ? 'connected' : 'not configured',
+    cors: 'enabled'
   });
 });
 
@@ -108,7 +117,6 @@ app.get('/api/test-firebase', async (req, res) => {
   }
 });
 
-// LOAD ROUTES
 try {
   const authRoutes = require('./routes/auth');
   const progressRoutes = require('./routes/progress');
@@ -123,12 +131,11 @@ try {
   console.error('Error loading routes:', error.message);
 }
 
-// ERROR HANDLING
 app.use((err, req, res, next) => {
   console.error('Server Error:', err);
   res.status(500).json({ 
     success: false, 
-    error: err.message || 'Something went wrong!',
+    error: err.message || 'Internal server error',
     timestamp: new Date().toISOString()
   });
 });
@@ -140,15 +147,6 @@ app.use('*', (req, res) => {
     error: 'Endpoint not found',
     path: req.originalUrl,
     method: req.method,
-    availableEndpoints: [
-      'GET /',
-      'GET /api/health',
-      'GET /api/test-firebase',
-      'GET /api/quiz/list',
-      'GET /api/quiz/:quizId',
-      'POST /api/auth/register',
-      'POST /api/auth/login'
-    ],
     timestamp: new Date().toISOString()
   });
 });
@@ -159,5 +157,6 @@ if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Backend URL: http://localhost:${PORT}`);
+    console.log(`CORS enabled for all origins`);
   });
 }

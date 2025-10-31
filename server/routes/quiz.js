@@ -10,49 +10,57 @@ try {
   db = null;
 }
 
-// GET /api/quiz/list - Get all available quizzes
+router.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+  res.status(204).send();
+});
+
+// GET /api/quiz/list
 router.get('/list', async (req, res) => {
   try {
-    console.log('Getting quiz list...');
+    console.log('[QUIZ] Getting quiz list from Firebase...');
+    console.log('[QUIZ] Origin:', req.headers.origin);
     
-    const quizzes = [
-      {
-        id: 'circulatory',
-        title: 'Circulatory System',
-        description: 'Test your knowledge about the circulatory system',
-        difficulty: 'medium',
-        questionCount: 10,
-        timeLimit: 300,
-        available: true
-      },
-      {
-        id: 'respiratory',
-        title: 'Respiratory System', 
-        description: 'Learn about breathing and lungs',
-        difficulty: 'easy',
-        questionCount: 8,
-        timeLimit: 240,
-        available: true
-      },
-      {
-        id: 'nervous',
-        title: 'Nervous System',
-        description: 'Explore the brain and nervous system', 
-        difficulty: 'hard',
-        questionCount: 12,
-        timeLimit: 360,
-        available: true
-      }
-    ];
+    if (!db) {
+      return res.status(500).json({
+        success: false,
+        error: 'Firebase not initialized',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const quizzesRef = db.collection('quizzes');
+    const snapshot = await quizzesRef.get();
+    
+    if (snapshot.empty) {
+      return res.json({
+        success: false,
+        error: 'No quizzes found in Firebase',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    const quizzes = [];
+    snapshot.forEach(doc => {
+      quizzes.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+
+    console.log(`[QUIZ] Found ${quizzes.length} quizzes`);
 
     res.json({
       success: true,
       data: quizzes,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      source: 'firebase'
     });
 
   } catch (error) {
-    console.error('Error getting quiz list:', error);
+    console.error('[QUIZ] Error getting quiz list:', error);
     res.status(500).json({
       success: false,
       error: error.message,
@@ -61,86 +69,47 @@ router.get('/list', async (req, res) => {
   }
 });
 
-// GET /api/quiz/:quizId - Get specific quiz data
+// GET /api/quiz/:quizId
 router.get('/:quizId', async (req, res) => {
   try {
     const { quizId } = req.params;
-    console.log(`Getting quiz data for: ${quizId}`);
+    console.log(`[QUIZ] Getting quiz ${quizId} from Firebase...`);
 
-    // Sample quiz data - bisa diganti dengan Firebase nanti
-    const quizData = {
-      circulatory: {
-        id: 'circulatory',
-        title: 'Circulatory System Quiz',
-        description: 'Test your knowledge about heart and blood circulation',
-        timeLimit: 300,
-        questions: [
-          {
-            id: 1,
-            question: "What is the main function of the heart?",
-            options: [
-              "To pump blood throughout the body",
-              "To filter oxygen from air", 
-              "To produce red blood cells",
-              "To store nutrients"
-            ],
-            correct: 0,
-            explanation: "The heart's primary function is to pump blood throughout the body."
-          },
-          {
-            id: 2,
-            question: "Which blood vessel carries oxygenated blood away from the heart?",
-            options: [
-              "Veins",
-              "Arteries", 
-              "Capillaries",
-              "Lymphatic vessels"
-            ],
-            correct: 1,
-            explanation: "Arteries carry oxygenated blood away from the heart to body tissues."
-          }
-        ]
-      },
-      respiratory: {
-        id: 'respiratory',
-        title: 'Respiratory System Quiz',
-        description: 'Learn about lungs and breathing',
-        timeLimit: 240,
-        questions: [
-          {
-            id: 1,
-            question: "What is the main organ of the respiratory system?",
-            options: [
-              "Heart",
-              "Lungs",
-              "Brain", 
-              "Liver"
-            ],
-            correct: 1,
-            explanation: "The lungs are the main organs responsible for gas exchange."
-          }
-        ]
-      }
-    };
-
-    const quiz = quizData[quizId];
-    
-    if (!quiz) {
-      return res.status(404).json({
+    if (!db) {
+      return res.status(500).json({
         success: false,
-        error: `Quiz '${quizId}' not found`,
+        error: 'Firebase not initialized',
         timestamp: new Date().toISOString()
       });
     }
 
+    const quizRef = db.collection('quizzes').doc(quizId);
+    const doc = await quizRef.get();
+
+    if (!doc.exists) {
+      return res.status(404).json({
+        success: false,
+        error: `Quiz '${quizId}' not found in Firebase`,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    const quizData = {
+      id: doc.id,
+      ...doc.data()
+    };
+
+    console.log(`[QUIZ] Found quiz ${quizId}`);
+
     res.json({
       success: true,
-      data: quiz,
-      timestamp: new Date().toISOString()
+      data: quizData,
+      timestamp: new Date().toISOString(),
+      source: 'firebase'
     });
 
   } catch (error) {
-    console.error('Error getting quiz:', error);
+    console.error(`[QUIZ] Error getting quiz:`, error);
     res.status(500).json({
       success: false,
       error: error.message,
