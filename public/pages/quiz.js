@@ -37,83 +37,96 @@ function updateProgressCircle(percentage) {
 
 async function fetchQuizzesFromBackend() {
   try {
-    const response = await fetch('https://be-anato-learn-6ex73rcgf-desati-dindas-projects.vercel.app/api/quiz/list');
-    const result = await response.json();
+    console.log('Fetching quizzes from backend...');
     
-    if (result.success && result.data) {
-      const transformedQuizzes = result.data.map((quiz, index) => ({
-        id: index + 1,
-        title: quiz.title,
-        questions: quiz.totalQuestions || 5,
-        image: quiz.image,
-        type: quiz.id,
-        isActive: quiz.isActive
-      }));
-      return transformedQuizzes;
-    } else {
-      throw new Error('No data from backend');
+    const response = await fetch('https://be-anato-learn-6ex73rcgf-desati-dindas-projects.vercel.app/api/quiz/list', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    console.log('Response status:', response.status);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+
+    const result = await response.json();
+    console.log('Backend response:', result);
+
+    if (result.success && result.data) {
+      return result.data;
+    } else {
+      throw new Error('Invalid response format from backend');
+    }
+
   } catch (error) {
     console.error('Backend fetch failed:', error);
+    
     return [
       {
-        id: 1,
-        title: "Circulatory system",
-        questions: 5,
-        image: "./assets/circulatory.jpg",
-        type: "circulatory"
+        id: 'circulatory',
+        title: 'Circulatory System',
+        description: 'Test your knowledge about the circulatory system',
+        difficulty: 'medium',
+        questionCount: 10,
+        timeLimit: 300,
+        available: true
       },
       {
-        id: 2,
-        title: "Quiz round 2",
-        questions: 5,
-        image: "./assets/questionred.png",
-        type: "respiratory"
+        id: 'respiratory', 
+        title: 'Respiratory System',
+        description: 'Learn about breathing and lungs',
+        difficulty: 'easy',
+        questionCount: 8,
+        timeLimit: 240,
+        available: true
       },
       {
-        id: 3,
-        title: "Quiz round 3",
-        questions: 5,
-        image: "./assets/questionred.png",
-        type: "nervous"
-      },
-      {
-        id: 4,
-        title: "Quiz round 4",
-        questions: 5,
-        image: "./assets/questionred.png",
-        type: "skeletal"
-      },
-      {
-        id: 5,
-        title: "Quiz round 5",
-        questions: 30,
-        image: "./assets/questionred.png",
-        type: "none"
-      },
-      {
-        id: 6,
-        title: "Quiz round 6",
-        questions: 18,
-        image: "./assets/questionred.png",
-        type: "none"
-      },
-      {
-        id: 7,
-        title: "Quiz round 7",
-        questions: 22,
-        image: "./assets/questionred.png",
-        type: "none"
-      },
-      {
-        id: 8,
-        title: "Quiz round 8",
-        questions: 30,
-        image: "./assets/questionred.png",
-        type: "none"
+        id: 'nervous',
+        title: 'Nervous System', 
+        description: 'Explore the brain and nervous system',
+        difficulty: 'hard',
+        questionCount: 12,
+        timeLimit: 360,
+        available: false
       }
     ];
   }
+}
+
+function renderQuizCard(quiz) {
+  const difficultyColors = {
+    'easy': '#4CAF50',
+    'medium': '#FF9800', 
+    'hard': '#F44336'
+  };
+
+  const statusText = quiz.available ? 'Available' : 'Coming Soon';
+  const statusClass = quiz.available ? 'available' : 'unavailable';
+  
+  return `
+    <div class="quiz-card1 ${statusClass}" data-quiz-type="${quiz.available ? quiz.id : 'none'}">
+      <div class="quiz-icon">
+        <div class="quiz-emoji"></div>
+      </div>
+      <div class="quiz-content">
+        <h3>${quiz.title}</h3>
+        <p>${quiz.description}</p>
+        <div class="quiz-meta">
+          <span class="difficulty" style="background-color: ${difficultyColors[quiz.difficulty]}">
+            ${quiz.difficulty.charAt(0).toUpperCase() + quiz.difficulty.slice(1)}
+          </span>
+          <span class="question-count">${quiz.questionCount} Questions</span>
+          <span class="time-limit">${Math.floor(quiz.timeLimit / 60)} min</span>
+        </div>
+        <div class="quiz-status ${statusClass}">
+          ${statusText}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 function generateQuizCard(quiz) {
