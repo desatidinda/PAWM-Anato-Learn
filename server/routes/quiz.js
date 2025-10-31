@@ -1,6 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../config/firebase');
+
+let db;
+try {
+  const firebase = require('../config/firebase');
+  db = firebase.db;
+} catch (error) {
+  console.log('Firebase not available in quiz routes');
+  db = null;
+}
 
 // GET /api/quiz/list - Get all available quizzes
 router.get('/list', async (req, res) => {
