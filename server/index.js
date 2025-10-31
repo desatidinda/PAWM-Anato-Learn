@@ -6,13 +6,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: ['https://anato-learn.vercel.app', 'http://localhost:3000',  /\.vercel\.app$/], 
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: false
 }));
-
-app.options('*', cors());
 
 app.use(express.json());
 

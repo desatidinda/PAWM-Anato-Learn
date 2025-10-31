@@ -2,17 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../config/firebase');
 
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
-
 // GET /api/quiz/list - Get all available quizzes
 router.get('/list', async (req, res) => {
   try {
